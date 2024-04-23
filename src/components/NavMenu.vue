@@ -54,7 +54,7 @@ onMounted(() => {
           :currSelect="currSelect"
           @itemClick="selectItem"
         ></Tree>
-        <div @click="clearLocalStorage">Clear LocalStorage</div>
+        <div class="menu-item" @click="clearLocalStorage">Clear LocalStorage</div>
       </div>
     </Transition>
   </div>

@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import NavMenu from '@/components/NavMenu.vue'
-// import Jiugongge from '@/components/Jiugongge.vue'
+import FlashingGrid from '@/components/FlashingGrid.vue'
 </script>
 
 <template>
-  <main>
+  <div class="main-view">
     <div class="header">
       <NavMenu></NavMenu>
     </div>
-    <Jiugongge></Jiugongge>
-  </main>
+    <FlashingGrid></FlashingGrid>
+  </div>
 </template>
 
 <style>
-main {
+.main-view {
   width: 100%;
   height: 100%;
   background-color: #d6d6d6;
+  display: flex;
+  flex-direction: column;
 
   .header {
     position: relative;

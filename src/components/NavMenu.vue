@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getMenu, type MenuData } from '@/services/menu'
 import Tree from './Tree.vue'
 const dialogShow = ref(false)
 const menuList = ref<MenuData[]>([])
 const currSelect = ref<String[]>([])
 const vClickOutside = {
-  mounted: (el, binding, vnode) => {
+  mounted: (el, binding) => {
     el.clickOutsideEvent = function (event) {
       if (!(el === event.target || el.contains(event.target))) {
         binding.value(event)
@@ -23,9 +23,20 @@ const closeDialog = () => {
 }
 const selectItem = (item: String[]) => {
   currSelect.value = item
+  localStorage.setItem('menu-selected', JSON.stringify(item)) // 側邊選單 - 2.記憶功能
 }
 getMenu().then((dataList: MenuData[]) => {
   menuList.value = dataList
+})
+
+const clearLocalStorage = () => {
+  localStorage.removeItem('menu-selected') // 側邊選單 - 2.記憶功能
+}
+
+onMounted(() => {
+  if (localStorage.getItem('menu-selected')) {
+    currSelect.value = JSON.parse(localStorage.getItem('menu_selected')) // 側邊選單 - 2.記憶功能
+  }
 })
 </script>
 
@@ -43,9 +54,7 @@ getMenu().then((dataList: MenuData[]) => {
           :currSelect="currSelect"
           @itemClick="selectItem"
         ></Tree>
-        <!-- <div v-for="menu of menuList" :key="menu.key" class="menu-item" :class="{'active': currSelect?.key === menu.key}" @click="selectItem(menu)">
-          {{ menu.text }}
-        </div> -->
+        <div @click="clearLocalStorage">Clear LocalStorage</div>
       </div>
     </Transition>
   </div>
@@ -70,6 +79,7 @@ getMenu().then((dataList: MenuData[]) => {
   width: 40%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.75);
+  z-index: 5;
   .menu-item {
     color: #ffffff;
     &.active {

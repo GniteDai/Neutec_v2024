@@ -1,8 +1,22 @@
 <script setup lang="ts">
+import { unref } from 'vue'
 import Tree from './Tree.vue'
+import { type MenuData } from '@/services/menu'
 const props = defineProps(['menu', 'children', 'depth', 'currSelect'])
 const emit = defineEmits(['itemClick'])
-const selectItem = (item: string[]) => {
+const menuSelect = () => {
+  const ans: string[] = []
+  const queue: MenuData[] = [props.menu] // 側邊選單 - 1.需包含所有種類
+  while (queue.length) {
+    const curr: MenuData = queue.shift()
+    ans.push(curr.key)
+    if (curr.children?.length) {
+      queue.push(...curr.children)
+    }
+  }
+  emit('itemClick', ans)
+}
+const childSelect = (item: string[]) => {
   item.unshift(props.menu.key)
   emit('itemClick', item)
 }
@@ -14,7 +28,7 @@ const selectItem = (item: string[]) => {
     :class="{ active: currSelect?.includes(menu.key) }"
     :style="{ transform: `translateX(${depth * 4}px)` }"
   >
-    <div @click="$emit('itemClick', [menu.key])">{{ menu.text }}</div>
+    <div @click="menuSelect">{{ menu.text }}</div>
 
     <template v-if="currSelect?.includes(menu.key)">
       <Tree
@@ -24,7 +38,7 @@ const selectItem = (item: string[]) => {
         :children="child.children"
         :depth="depth + 1"
         :currSelect="currSelect"
-        @itemClick="selectItem"
+        @itemClick="childSelect"
       ></Tree>
     </template>
   </div>

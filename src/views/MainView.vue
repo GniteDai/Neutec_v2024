@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import NavMenu from '@/components/NavMenu.vue'
 import FlashingGrid from '@/components/FlashingGrid.vue'
+import DropDown from '@/components/Drop-down.vue'
 </script>
 
 <template>
   <div class="main-view">
     <div class="header">
       <NavMenu></NavMenu>
+      <DropDown></DropDown>
     </div>
     <FlashingGrid></FlashingGrid>
   </div>
@@ -23,6 +25,9 @@ import FlashingGrid from '@/components/FlashingGrid.vue'
   .header {
     position: relative;
     background-color: #ffffff;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
 }
 </style>

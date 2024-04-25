@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import sideMenu from '@/components/side-Menu.vue'
 import FlashingGrid from '@/components/FlashingGrid.vue'
-import DropDown from '@/components/Drop-down.vue'
 </script>
 
 <template>
   <div class="main-view">
     <div class="header">
-      <DropDown></DropDown>
       <sideMenu></sideMenu>
     </div>
     <FlashingGrid></FlashingGrid>

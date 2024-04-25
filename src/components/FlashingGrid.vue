@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+
 const dataList: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 const target = ref<number[]>([3, 5, 9])
 const randomFlash = ref<boolean>(false)

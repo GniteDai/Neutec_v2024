@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getMenu, type MenuData } from '@/services/menu'
 
 const isOpen = ref(false)
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value
-}
+const items = ref<MenuData[]>([])
+const currItem = ref<MenuData>()
+
 const vClickOutside = {
   mounted: (el, binding) => {
     el.clickOutsideEvent = function (event) {
@@ -19,27 +19,29 @@ const vClickOutside = {
     document.removeEventListener('click', el.clickOutsideEvent)
   }
 }
+
+onMounted(() => {
+  getMenu().then((dataList: MenuData[]) => {
+    const res: MenuData[] = []
+    const dfs = (node: MenuData) => {
+      res.push(node)
+      if (node.children) {
+        node.children.forEach((child) => dfs(child))
+      }
+    }
+    dataList.forEach((data) => dfs(data))
+    items.value = res
+  })
+})
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value
+}
 const closeDialog = () => {
   isOpen.value = false
 }
-
-const items = ref<MenuData[]>([])
-getMenu().then((dataList: MenuData[]) => {
-  const res: MenuData[] = []
-  const dfs = (node: MenuData) => {
-    res.push(node)
-    if (node.children) {
-      node.children.forEach((child) => dfs(child))
-    }
-  }
-  dataList.forEach((data) => dfs(data))
-  items.value = res
-})
-
-const currItem = ref<MenuData>()
 const clickItem = (item: MenuData) => {
   currItem.value = item
-  isOpen.value = !isOpen.value
 }
 </script>
 
@@ -67,6 +69,7 @@ const clickItem = (item: MenuData) => {
 .dropdown {
   position: relative;
   width: 140px;
+  margin: 0 auto;
 }
 
 .toggle {
@@ -104,6 +107,8 @@ const clickItem = (item: MenuData) => {
   margin: 0;
   width: 100%;
   z-index: 5;
+  max-height: 300px;
+  overflow: auto;
   > li {
     padding: 2px 8px;
     &.highlight {

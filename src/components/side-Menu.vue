@@ -2,9 +2,12 @@
 import { onMounted, ref } from 'vue'
 import { getMenu, type MenuData } from '@/services/menu'
 import TreeNode from './Tree-Node.vue'
+import DropDown from '@/components/Drop-down.vue'
+
 const dialogShow = ref(false)
 const menuList = ref<MenuData[]>([])
 const currSelect = ref<String[]>([])
+
 const vClickOutside = {
   mounted: (el, binding) => {
     el.clickOutsideEvent = function (event) {
@@ -18,6 +21,16 @@ const vClickOutside = {
     document.removeEventListener('click', el.clickOutsideEvent)
   }
 }
+
+onMounted(() => {
+  if (localStorage.getItem('menu-selected')) {
+    currSelect.value = JSON.parse(localStorage.getItem('menu-selected')) // 側邊選單 - 2.記憶功能
+  }
+  getMenu().then((dataList: MenuData[]) => {
+    menuList.value = dataList
+  })
+})
+
 const closeDialog = () => {
   dialogShow.value = false
 }
@@ -25,19 +38,10 @@ const selectItem = (item: String[]) => {
   currSelect.value = item
   localStorage.setItem('menu-selected', JSON.stringify(item)) // 側邊選單 - 2.記憶功能
 }
-getMenu().then((dataList: MenuData[]) => {
-  menuList.value = dataList
-})
-
 const clearLocalStorage = () => {
   localStorage.removeItem('menu-selected') // 側邊選單 - 2.記憶功能
+  alert('success')
 }
-
-onMounted(() => {
-  if (localStorage.getItem('menu-selected')) {
-    currSelect.value = JSON.parse(localStorage.getItem('menu-selected')) // 側邊選單 - 2.記憶功能
-  }
-})
 </script>
 
 <template>
@@ -55,6 +59,7 @@ onMounted(() => {
           @itemClick="selectItem"
         ></TreeNode>
         <div class="menu-item" @click="clearLocalStorage">Clear LocalStorage</div>
+        <DropDown></DropDown>
       </div>
     </Transition>
   </div>

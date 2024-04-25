@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import TreeNode from './Tree-Node.vue'
 import { type MenuData } from '@/services/menu'
+
 const props = defineProps(['menu', 'children', 'depth', 'currSelect'])
 const emit = defineEmits(['itemClick'])
+
 const menuSelect = () => {
   // 側邊選單 - 點擊後該項目的子層級存在, 自動全選子層級所有.
   // const ans: string[] = []

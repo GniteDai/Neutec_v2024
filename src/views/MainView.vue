@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NavMenu from '@/components/NavMenu.vue'
+import sideMenu from '@/components/side-Menu.vue'
 import FlashingGrid from '@/components/FlashingGrid.vue'
 import DropDown from '@/components/Drop-down.vue'
 </script>
@@ -7,8 +7,8 @@ import DropDown from '@/components/Drop-down.vue'
 <template>
   <div class="main-view">
     <div class="header">
-      <NavMenu></NavMenu>
       <DropDown></DropDown>
+      <sideMenu></sideMenu>
     </div>
     <FlashingGrid></FlashingGrid>
   </div>

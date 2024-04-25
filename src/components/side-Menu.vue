@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { getMenu, type MenuData } from '@/services/menu'
-import Tree from './Tree.vue'
+import TreeNode from './Tree-Node.vue'
 const dialogShow = ref(false)
 const menuList = ref<MenuData[]>([])
 const currSelect = ref<String[]>([])
@@ -35,17 +35,17 @@ const clearLocalStorage = () => {
 
 onMounted(() => {
   if (localStorage.getItem('menu-selected')) {
-    currSelect.value = JSON.parse(localStorage.getItem('menu_selected')) // 側邊選單 - 2.記憶功能
+    currSelect.value = JSON.parse(localStorage.getItem('menu-selected')) // 側邊選單 - 2.記憶功能
   }
 })
 </script>
 
 <template>
-  <div class="nav-box" v-click-outside="closeDialog">
-    <div class="button" @click="dialogShow = !dialogShow">X</div>
+  <div class="side-menu-box" v-click-outside="closeDialog">
+    <div class="hamburger" @click="dialogShow = !dialogShow">X</div>
     <Transition name="fade">
       <div v-if="dialogShow" class="dialog">
-        <Tree
+        <TreeNode
           v-for="menu of menuList"
           :key="menu.key"
           :menu="menu"
@@ -53,7 +53,7 @@ onMounted(() => {
           :depth="0"
           :currSelect="currSelect"
           @itemClick="selectItem"
-        ></Tree>
+        ></TreeNode>
         <div class="menu-item" @click="clearLocalStorage">Clear LocalStorage</div>
       </div>
     </Transition>
@@ -61,13 +61,14 @@ onMounted(() => {
 </template>
 
 <style>
-.nav-box {
+.side-menu-box {
+  color: #000000;
+}
+.hamburger {
+  margin-left: 8px;
   min-width: 32px;
   min-height: 32px;
   background-color: #efefef;
-  color: #000000;
-  width: fit-content;
-  margin-left: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,12 +81,6 @@ onMounted(() => {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 5;
-  .menu-item {
-    color: #ffffff;
-    &.active {
-      color: yellow;
-    }
-  }
 }
 
 .fade-enter-active,

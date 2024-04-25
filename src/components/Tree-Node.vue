@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { unref } from 'vue'
-import Tree from './Tree.vue'
+import TreeNode from './Tree-Node.vue'
 import { type MenuData } from '@/services/menu'
 const props = defineProps(['menu', 'children', 'depth', 'currSelect'])
 const emit = defineEmits(['itemClick'])
 const menuSelect = () => {
-  const ans: string[] = []
-  const queue: MenuData[] = [props.menu] // 側邊選單 - 1.需包含所有種類
-  while (queue.length) {
-    const curr: MenuData = queue.shift()
-    ans.push(curr.key)
-    if (curr.children?.length) {
-      queue.push(...curr.children)
-    }
-  }
-  emit('itemClick', ans)
+  // 側邊選單 - 點擊後該項目的子層級存在, 自動全選子層級所有.
+  // const ans: string[] = []
+  // const queue: MenuData[] = [props.menu]
+  // while (queue.length) {
+  //   const curr: MenuData = queue.shift()
+  //   ans.push(curr.key)
+  //   if (curr.children?.length) {
+  //     queue.push(...curr.children)
+  //   }
+  // }
+  // emit('itemClick', ans)
+
+  emit('itemClick', [props.menu.key])
 }
 const childSelect = (item: string[]) => {
   item.unshift(props.menu.key)
@@ -31,7 +33,7 @@ const childSelect = (item: string[]) => {
     <div @click="menuSelect">{{ menu.text }}</div>
 
     <template v-if="currSelect?.includes(menu.key)">
-      <Tree
+      <TreeNode
         v-for="child of children"
         :key="child.key"
         :menu="child"
@@ -39,7 +41,7 @@ const childSelect = (item: string[]) => {
         :depth="depth + 1"
         :currSelect="currSelect"
         @itemClick="childSelect"
-      ></Tree>
+      ></TreeNode>
     </template>
   </div>
 </template>

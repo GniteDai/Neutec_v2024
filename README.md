@@ -30,7 +30,11 @@
 
 ### :heavy_check_mark: 四顆球同時朝同一個座標點移動
 
-search project keyWord `randomMove()`
+search project keyWord
+
+```
+randomMove()
+```
 
 ### :x: 請在效能考量下，設計可同時存在一百顆球、且指定飛行起終點的結構
 
@@ -40,14 +44,20 @@ search project keyWord `randomMove()`
 
 ### :heavy_check_mark: 提供下拉選單，需包含所有種類。從下拉選單中選取任一項目時，等同點擊該項目
 
-`@/components/Drop-down.vue`
+```
+@/components/Drop-down.vue
+```
 
 ### :heavy_check_mark: 請實作記憶功能，關閉分頁後再開啟，可以顯示上次選取的項目
 
 - LocalStorage
 - SessionStorage
 
-search project keyWord `menu-selected`
+search project keyWord
+
+```
+menu-selected
+```
 
 ### :x: 請在效能考量下，設計可收合、展開最多一百層的選單
 

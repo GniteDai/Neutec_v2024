@@ -1,38 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { getMenu, type MenuData } from '@/services/menu'
+import { ref } from 'vue'
+import { type MenuData } from '@/services/menu'
+import { useMenuStore } from '@/stores/menu'
 
+const menuStore = useMenuStore()
 const isOpen = ref(false)
-const items = ref<MenuData[]>([])
-const currItem = ref<MenuData>()
-
-const vClickOutside = {
-  mounted: (el, binding) => {
-    el.clickOutsideEvent = function (event) {
-      if (!(el === event.target || el.contains(event.target))) {
-        binding.value(event)
-      }
-    }
-    document.addEventListener('click', el.clickOutsideEvent)
-  },
-  beforeUnmount: (el) => {
-    document.removeEventListener('click', el.clickOutsideEvent)
-  }
-}
-
-onMounted(() => {
-  getMenu().then((dataList: MenuData[]) => {
-    const res: MenuData[] = []
-    const dfs = (node: MenuData) => {
-      res.push(node)
-      if (node.children) {
-        node.children.forEach((child) => dfs(child))
-      }
-    }
-    dataList.forEach((data) => dfs(data))
-    items.value = res
-  })
-})
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
@@ -41,22 +13,22 @@ const closeDialog = () => {
   isOpen.value = false
 }
 const clickItem = (item: MenuData) => {
-  currItem.value = item
+  menuStore.setCurrItem(item)
 }
 </script>
 
 <template>
   <div class="dropdown" :class="{ open: isOpen }" v-click-outside="closeDialog">
     <div class="toggle" @click="toggleDropdown">
-      <span>{{ currItem ? currItem.text : '請選擇' }}</span>
+      <span>{{ menuStore.currItem ? menuStore.currItem.text : '請選擇' }}</span>
       <span class="arrow" :class="{ up: isOpen }"></span>
     </div>
     <ul class="drop-menu" v-if="isOpen">
       <li
-        v-for="item of items"
+        v-for="item of menuStore.dropdownList"
         :key="item.key"
         class="drop-menu-item"
-        :class="{ highlight: currItem?.key === item.key }"
+        :class="{ highlight: menuStore.currItem?.key === item.key }"
         @click="clickItem(item)"
       >
         {{ item.text }}

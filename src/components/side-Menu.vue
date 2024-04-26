@@ -1,62 +1,41 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { getMenu, type MenuData } from '@/services/menu'
+import { useMenuStore } from '@/stores/menu'
 import TreeNode from './Tree-Node.vue'
 import DropDown from '@/components/Drop-down.vue'
 
+const menuStore = useMenuStore()
 const dialogShow = ref(false)
-const menuList = ref<MenuData[]>([])
-const currSelect = ref<String[]>([])
-
-const vClickOutside = {
-  mounted: (el, binding) => {
-    el.clickOutsideEvent = function (event) {
-      if (!(el === event.target || el.contains(event.target))) {
-        binding.value(event)
-      }
-    }
-    document.addEventListener('click', el.clickOutsideEvent)
-  },
-  beforeUnmount: (el) => {
-    document.removeEventListener('click', el.clickOutsideEvent)
-  }
-}
-
-onMounted(() => {
-  if (localStorage.getItem('menu-selected')) {
-    currSelect.value = JSON.parse(localStorage.getItem('menu-selected')) // 側邊選單 - 2.記憶功能
-  }
-  getMenu().then((dataList: MenuData[]) => {
-    menuList.value = dataList
-  })
-})
 
 const closeDialog = () => {
   dialogShow.value = false
 }
-const selectItem = (item: String[]) => {
-  currSelect.value = item
-  localStorage.setItem('menu-selected', JSON.stringify(item)) // 側邊選單 - 2.記憶功能
-}
 const clearLocalStorage = () => {
-  localStorage.removeItem('menu-selected') // 側邊選單 - 2.記憶功能
+  localStorage.removeItem('menu-selected')
   alert('success')
 }
+
+onMounted(() => {
+  getMenu().then((dataList: MenuData[]) => {
+    menuStore.setMenuList(dataList)
+  })
+})
 </script>
 
 <template>
   <div class="side-menu-box" v-click-outside="closeDialog">
-    <div class="hamburger" @click="dialogShow = !dialogShow">X</div>
+    <div class="hamburger" @click="dialogShow = !dialogShow">
+      <div class="bar"></div>
+    </div>
     <Transition name="fade">
       <div v-if="dialogShow" class="dialog">
         <TreeNode
-          v-for="menu of menuList"
+          v-for="menu of menuStore.menuList"
           :key="menu.key"
           :menu="menu"
           :children="menu.children"
           :depth="0"
-          :currSelect="currSelect"
-          @itemClick="selectItem"
         ></TreeNode>
         <div class="menu-item" @click="clearLocalStorage">Clear LocalStorage</div>
         <DropDown></DropDown>
@@ -77,6 +56,24 @@ const clearLocalStorage = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+.bar,
+.bar::after,
+.bar::before {
+  background: #222;
+  content: '';
+  display: block;
+  height: 1px;
+  position: absolute;
+  transition: background ease .15s, top ease .15s .15s, transform ease .15s;
+  width: 16px;
+}
+.bar::after {
+  top: 6px;
+}
+.bar::before {
+  top: -6px;
 }
 .dialog {
   position: fixed;

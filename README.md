@@ -1,3 +1,7 @@
+# demo
+
+https://gnitedai.github.io/Neutec_v2024/
+
 # 基礎需求
 
 ### 主頁面-側邊選單收合按鈕

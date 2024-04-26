@@ -3,7 +3,7 @@ import { onMounted, ref, type Ref, watch } from 'vue'
 
 const flashList = ref<number[]>([3, 5, 9])
 const randomFlash = ref<boolean>(false)
-let flashInterval: ReturnType<typeof setInterval> = 0
+let flashInterval: ReturnType<typeof setInterval> | null = null
 const flashingGrid: Ref<HTMLElement | null> = ref(null)
 const balls: Ref<HTMLElement[]> = ref([])
 const boxs: Ref<HTMLElement[]> = ref([])
@@ -24,7 +24,9 @@ watch(randomFlash, (newVal) => {
       flashList.value = temp
     }, 2 * 1000)
   } else {
-    clearInterval(flashInterval)
+    if (flashInterval) {
+      clearInterval(flashInterval)
+    }
   }
 })
 
@@ -96,13 +98,13 @@ onMounted(() => {
     <div class="flashing-grid" ref="flashingGrid">
       <div
         v-for="box in 9"
-        :ref="(el) => boxs.push(el)"
+        :ref="(el: any) => boxs.push(el)"
         :key="box"
         class="flashing-item"
         :class="{ flashing: flashList.includes(box) }"
         @click="boxClick"
       ></div>
-      <div v-for="ball in 4" :key="`ball-${ball}`" :ref="(el) => balls.push(el)" class="ball">
+      <div v-for="ball in 4" :key="`ball-${ball}`" :ref="(el: any) => balls.push(el)" class="ball">
         {{ ball }}
       </div>
     </div>

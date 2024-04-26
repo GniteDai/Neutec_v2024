@@ -25,7 +25,9 @@ function findParentKeys(
 
 export const useMenuStore = defineStore('menu', () => {
   const menuList: Ref<MenuData[]> = ref([])
-  const currItem: Ref<MenuData | null> = ref(JSON.parse(localStorage.getItem('menu-selected')) || null)
+  const currItem: Ref<MenuData | null> = ref(
+    JSON.parse(localStorage.getItem('menu-selected')!) || null
+  )
 
   const dropdownList = computed(() => {
     const temp: MenuData[] = []
@@ -39,7 +41,7 @@ export const useMenuStore = defineStore('menu', () => {
     return temp
   })
   const highlightList = computed(() => {
-    return findParentKeys(menuList.value, currItem.value?.key) || []
+    return findParentKeys(menuList.value, currItem.value?.key || '') || []
   })
 
   function setMenuList(data: MenuData[]) {
